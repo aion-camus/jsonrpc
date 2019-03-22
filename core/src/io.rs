@@ -200,6 +200,7 @@ impl<T: Metadata, S: Middleware<T>> MetaIoHandler<T, S> {
 
 		trace!(target: "rpc", "Request: {}.", request);
 		let request = read_request(request);
+		trace!(target: "rpc", "read Request: {:?}.", request);
 		let result = match request {
 			Err(error) => A(futures::finished(Some(Response::from(error, self.compatibility.default_version())))),
 			Ok(request) => B(self.handle_rpc_request(request, meta)),
