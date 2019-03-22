@@ -281,14 +281,17 @@ impl<T: Metadata, S: Middleware<T>> MetaIoHandler<T, S> {
 
 				match self.methods.get(&notification.method) {
 					Some(&RemoteProcedure::Notification(ref notification)) => {
+						debug!(target: "rpc", "execute: {:?}", notification.method);
 						notification.execute(params, meta);
 					},
 					Some(&RemoteProcedure::Alias(ref alias)) => {
+						debug!(target: "rpc", "get method for alias: {:?}", alias);
 						if let Some(&RemoteProcedure::Notification(ref notification)) = self.methods.get(alias) {
+							debug!(target: "rpc", "execute: {:?}", alias);
 							notification.execute(params, meta);
 						}
 					},
-					_ => {},
+					_ => {trace!(target: "rpc", "No method found");},
 				}
 
 				B(futures::finished(None))
